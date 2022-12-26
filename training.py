@@ -38,8 +38,8 @@ class Model:
                                         torch.tensor([0], dtype=torch.float32, requires_grad=True).to(device)) ** 2)
 
     def disc_step(self, feature_batch, data_batch):
-        # feature_batch = Variable(torch.from_numpy(feature_batch), requires_grad=True).to(device)
-        # data_batch = Variable(torch.from_numpy(data_batch), requires_grad=True).to(device)
+        feature_batch = Variable(torch.from_numpy(feature_batch), requires_grad=True).to(device)
+        data_batch = Variable(torch.from_numpy(data_batch), requires_grad=True).to(device)
         data_fake = self.make_fake(feature_batch)
 
         self.disc_optimizer.zero_grad()
@@ -58,8 +58,8 @@ class Model:
         return loss_vals
 
     def gen_step(self, feature_batch, data_batch):
-        # feature_batch = Variable(torch.from_numpy(feature_batch), requires_grad=True).to(device)
-        # data_batch = Variable(torch.from_numpy(data_batch), requires_grad=True).to(device)
+        feature_batch = Variable(torch.from_numpy(feature_batch), requires_grad=True).to(device)
+        data_batch = Variable(torch.from_numpy(data_batch), requires_grad=True).to(device)
         d_real = self.discriminator(feature_batch, data_batch)
 
         self.gen_optimizer.zero_grad()
@@ -95,12 +95,12 @@ class Model:
     def test_epoch(self, data, features, epoch):
         self.discriminator.eval()
         self.generator.eval()
-        losses = []
+        losses = np.array([0, 0], dtype='float32')
         for i in range(0, len(data), BATCH_SIZE):
-            # feature_batch = Variable(torch.from_numpy(features[i:i + BATCH_SIZE]), requires_grad=True).to(device)
-            # data_batch = Variable(torch.from_numpy(data[i:i + BATCH_SIZE]), requires_grad=True).to(device)
-            feature_batch = features[i:i + BATCH_SIZE]
-            data_batch = data[i:i + BATCH_SIZE]
+            feature_batch = Variable(torch.from_numpy(features[i:i + BATCH_SIZE]), requires_grad=True).to(device)
+            data_batch = Variable(torch.from_numpy(data[i:i + BATCH_SIZE]), requires_grad=True).to(device)
+            # feature_batch = features[i:i + BATCH_SIZE]
+            # data_batch = data[i:i + BATCH_SIZE]
             data_fake = self.make_fake(feature_batch)
             d_real = self.discriminator(feature_batch, data_batch)
             d_fake = self.discriminator(feature_batch, data_fake)
