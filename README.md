@@ -1,1 +1,1 @@
-# coursework_22_23
+# Explore Adaptive Spectral Normalization for Generative Models
