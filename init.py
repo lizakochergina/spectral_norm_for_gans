@@ -1,3 +1,5 @@
+import torch
+
 n_classes = 10
 in_channels = 3
 out_channels = 32

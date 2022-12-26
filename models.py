@@ -1,8 +1,7 @@
 import torch
 import torch.nn as nn
 import numpy as np
-from torch.autograd import Variable
-from init import n_classes, in_channels, out_channels
+import torch.nn.functional as F
 
 
 def new_block(in_channels, out_channels, kernel_size=3, padding=1, p=0.2):
