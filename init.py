@@ -15,6 +15,8 @@ SAVE_TIME = 20
 SPEC_NORM_DISC = True
 SPEC_NORM_GEN = False
 
+LOSS = 'hinge'  # wasserstein or hinge
+
 pad_range = (-3, 5)
 time_range = (-7, 9)
 

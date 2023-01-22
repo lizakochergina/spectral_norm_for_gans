@@ -3,7 +3,8 @@ from torch.autograd import Variable
 import torch.optim as optim
 from models import Generator, Discriminator
 import numpy as np
-from init import GP_LAMBDA, LATENT_DIM, BATCH_SIZE, NUM_DISC_UPDATES, device
+from init import GP_LAMBDA, LATENT_DIM, BATCH_SIZE, NUM_DISC_UPDATES, device, LOSS
+from torch import nn
 
 
 class Model:
@@ -20,8 +21,11 @@ class Model:
         data = Variable(torch.rand((bs, LATENT_DIM), dtype=torch.float32), requires_grad=True).to(device)
         return self.generator(features, data)
 
-    def disc_loss(self, d_real, d_fake):
+    def disc_wasserstein_loss(self, d_real, d_fake):
         return torch.mean(d_fake - d_real)
+
+    def disc_hinge_loss(self, d_real, d_fake):
+        return nn.ReLU()(1.0 - d_real).mean() + nn.ReLU()(1.0 + d_fake).mean()
 
     def gen_loss(self, d_real, d_fake):
         return torch.mean(d_real - d_fake)
@@ -46,7 +50,10 @@ class Model:
 
         d_real = self.discriminator(feature_batch, data_batch)
         d_fake = self.discriminator(feature_batch, data_fake)
-        d_loss = self.disc_loss(d_real, d_fake) + GP_LAMBDA * self.gradient_penalty(feature_batch, data_batch, data_fake)
+        if LOSS == 'hinge':
+            d_loss = self.disc_hinge_loss(d_real, d_fake)
+        else:
+            d_loss = self.disc_wasserstein_loss(d_real, d_fake) + GP_LAMBDA * self.gradient_penalty(feature_batch, data_batch, data_fake)
 
         d_loss.backward()
         self.disc_optimizer.step()
@@ -69,7 +76,10 @@ class Model:
         g_loss.backward()
         self.gen_optimizer.step()
 
-        d_loss = self.disc_loss(d_real, d_fake) + GP_LAMBDA * self.gradient_penalty(feature_batch, data_batch, data_fake)
+        if LOSS == 'hinge':
+            d_loss = self.disc_hinge_loss(d_real, d_fake)
+        else:
+            d_loss = self.disc_wasserstein_loss(d_real, d_fake) + GP_LAMBDA * self.gradient_penalty(feature_batch, data_batch, data_fake)
 
         loss_vals = d_loss.detach().item(), g_loss.detach().item()
 
@@ -104,7 +114,10 @@ class Model:
             data_fake = self.make_fake(feature_batch)
             d_real = self.discriminator(feature_batch, data_batch)
             d_fake = self.discriminator(feature_batch, data_fake)
-            d_loss = self.disc_loss(d_real, d_fake) + GP_LAMBDA * self.gradient_penalty(feature_batch, data_batch, data_fake)
+            if LOSS == 'hinge':
+                d_loss = self.disc_hinge_loss(d_real, d_fake)
+            else:
+                d_loss = self.disc_wasserstein_loss(d_real, d_fake) + GP_LAMBDA * self.gradient_penalty(feature_batch, data_batch, data_fake)
             g_loss = self.gen_loss(d_real, d_fake)
             losses += np.array([d_loss.item(), g_loss.item()])
         losses /= (len(data) / BATCH_SIZE)
