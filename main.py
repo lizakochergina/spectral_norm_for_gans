@@ -1,14 +1,17 @@
 from training import Model
-from init import NUM_EPOCHS, device
+from init import NUM_EPOCHS, SAVE_TIME, device, make_dirs
 from get_data import get_data
-from evaluation import show_imgs, show_losses, show_metrics
+from evaluation import evaluate_model, show_imgs, show_losses, show_metrics
 from tqdm import tqdm
 import torch
+
+make_dirs()
 
 data_train, data_test, features_train, features_test = get_data()
 gen_model = Model()
 losses_train = []
 losses_test = []
+chi_metric = []
 
 for epoch in tqdm(range(NUM_EPOCHS)):
     cur_train_losses = gen_model.train_epoch(data_train, features_train, epoch)
@@ -19,10 +22,7 @@ for epoch in tqdm(range(NUM_EPOCHS)):
 
     gen_model.scheduler_step()
 
-torch.save(gen_model.generator, 'generator.pth')
-torch.save(gen_model.discriminator, 'discriminator.pth')
-
-fake = gen_model.make_fake(torch.from_numpy(features_test).to(device)).cpu().detach().numpy()
-show_imgs(data_test, fake)
-show_losses(losses_train, losses_test, len(data_train))
-show_metrics(data_test, fake)
+    if epoch % SAVE_TIME == 0:
+        torch.save(gen_model.generator, 'models/generator_' + str(epoch) + '.pth')
+        chi = evaluate_model(gen_model, features_test, data_test, losses_train, losses_test, len(data_train), chi_metric, epoch)
+        chi_metric.append(chi)
