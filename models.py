@@ -2,11 +2,29 @@ import torch
 import torch.nn as nn
 import numpy as np
 import torch.nn.functional as F
+from torch.nn.utils.parametrizations import spectral_norm
+from init import SPEC_NORM_DISC, SPEC_NORM_GEN
+
+
+def custom_conv(in_channels, out_channels, kernel_size, padding, is_spectral_norm=False):
+    if is_spectral_norm:
+        return spectral_norm(
+            nn.Conv2d(in_channels=in_channels, out_channels=out_channels, kernel_size=kernel_size, padding=padding),
+        )
+    else:
+        return nn.Conv2d(in_channels=in_channels, out_channels=out_channels, kernel_size=kernel_size, padding=padding),
+
+
+def custom_linear(in_features, out_features, is_spectral_norm=False):
+    if is_spectral_norm:
+        return spectral_norm(nn.Linear(in_features, out_features))
+    else:
+        return nn.Linear(in_features, out_features)
 
 
 def new_block(in_channels, out_channels, kernel_size=3, padding=1, p=0.2):
     return nn.Sequential(
-        nn.Conv2d(in_channels=in_channels, out_channels=out_channels, kernel_size=kernel_size, padding=padding),
+        custom_conv(in_channels=in_channels, out_channels=out_channels, kernel_size=kernel_size, padding=padding, is_spectral_norm=SPEC_NORM_DISC),
         nn.ELU(),
         nn.Dropout(p=p)
     )
@@ -31,9 +49,9 @@ class Discriminator(nn.Module):
         )
 
         self.linear = nn.Sequential(
-            nn.Linear(in_features=69, out_features=128),
+            custom_linear(in_features=69, out_features=128, is_spectral_norm=SPEC_NORM_DISC),
             nn.ELU(),
-            nn.Linear(in_features=128, out_features=1)
+            custom_linear(in_features=128, out_features=1, is_spectral_norm=SPEC_NORM_DISC)
         )
 
     def forward(self, features, image):  # features [bs, 5]  image [bs, 8, 16]
@@ -72,15 +90,15 @@ class Generator(nn.Module):
         super().__init__()
 
         self.encoder = nn.Sequential(
-            nn.Linear(in_features=37, out_features=32),
+            custom_linear(in_features=37, out_features=32, is_spectral_norm=SPEC_NORM_GEN),
             nn.ELU(),
-            nn.Linear(in_features=32, out_features=64),
+            custom_linear(in_features=32, out_features=64, is_spectral_norm=SPEC_NORM_GEN),
             nn.ELU(),
-            nn.Linear(in_features=64, out_features=64),
+            custom_linear(in_features=64, out_features=64, is_spectral_norm=SPEC_NORM_GEN),
             nn.ELU(),
-            nn.Linear(in_features=64, out_features=64),
+            custom_linear(in_features=64, out_features=64, is_spectral_norm=SPEC_NORM_GEN),
             nn.ELU(),
-            nn.Linear(in_features=64, out_features=128),
+            custom_linear(in_features=64, out_features=128, is_spectral_norm=SPEC_NORM_GEN),
             CustomActivation()
         )
 

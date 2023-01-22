@@ -12,6 +12,9 @@ NUM_DISC_UPDATES = 8
 NUM_EPOCHS = 2001
 SAVE_TIME = 20
 
+SPEC_NORM_DISC = True
+SPEC_NORM_GEN = False
+
 pad_range = (-3, 5)
 time_range = (-7, 9)
 
