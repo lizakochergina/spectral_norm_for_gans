@@ -2,7 +2,6 @@ import io
 
 import numpy as np
 import matplotlib.pyplot as plt
-import PIL
 
 
 def _bootstrap_error(data, function, num_bs=100):
@@ -78,8 +77,9 @@ def make_trend_plot(feature_real, real, feature_gen, gen, name, calc_chi2=False,
     plt.close(fig)
     buf.seek(0)
 
-    img = PIL.Image.open(buf)
-    img_data = np.array(img.getdata(), dtype=np.uint8).reshape(1, img.size[1], img.size[0], -1)
+    # img = PIL.Image.open(buf)
+    # img_data = np.array(img.getdata(), dtype=np.uint8).reshape(1, img.size[1], img.size[0], -1)
+    img_data = None
 
     if calc_chi2:
         bins = np.linspace(

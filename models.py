@@ -24,7 +24,8 @@ def custom_linear(in_features, out_features, is_spectral_norm=False):
 
 def new_block(in_channels, out_channels, kernel_size=3, padding=1, p=0.2):
     return nn.Sequential(
-        custom_conv(in_channels=in_channels, out_channels=out_channels, kernel_size=kernel_size, padding=padding, is_spectral_norm=SPEC_NORM_DISC),
+        custom_conv(in_channels=in_channels, out_channels=out_channels, kernel_size=kernel_size, padding=padding,
+                    is_spectral_norm=SPEC_NORM_DISC),
         nn.ELU(),
         nn.Dropout(p=p)
     )
@@ -34,18 +35,18 @@ class Discriminator(nn.Module):
     def __init__(self):
         super().__init__()
 
-        self.encoder1 = nn.Sequential(                       #     bs  f   h  w
-            new_block(in_channels=6, out_channels=16),       # -> [bs, 16, 8, 16]
-            new_block(in_channels=16, out_channels=16),      # -> [bs, 16, 8, 16]
+        self.encoder1 = nn.Sequential(  # bs  f   h  w
+            new_block(in_channels=6, out_channels=16),  # -> [bs, 16, 8, 16]
+            new_block(in_channels=16, out_channels=16),  # -> [bs, 16, 8, 16]
         )
 
         self.encoder2 = nn.Sequential(
-            nn.MaxPool2d(kernel_size=(2,2), stride=(2, 2)),  #  -> [bs, 16, 8, 8]
-            new_block(in_channels=16, out_channels=32),      # -> [bs, 32, 8, 8]
-            new_block(in_channels=32, out_channels=32),      # -> [bs, 32, 8, 8]
-            nn.MaxPool2d(kernel_size=(2,2), stride=(2, 2)),  # -> [bs, 32, 4, 4]
-            new_block(in_channels=32, out_channels=64, padding=0),          # -> [bs, 64, 2, 2]
-            new_block(in_channels=64, out_channels=64, kernel_size=2, padding=0) # -> [bs, 64, 1, 1]
+            nn.MaxPool2d(kernel_size=(2, 2), stride=(2, 2)),  # -> [bs, 16, 8, 8]
+            new_block(in_channels=16, out_channels=32),  # -> [bs, 32, 8, 8]
+            new_block(in_channels=32, out_channels=32),  # -> [bs, 32, 8, 8]
+            nn.MaxPool2d(kernel_size=(2, 2), stride=(2, 2)),  # -> [bs, 32, 4, 4]
+            new_block(in_channels=32, out_channels=64, padding=0),  # -> [bs, 64, 2, 2]
+            new_block(in_channels=64, out_channels=64, kernel_size=2, padding=0)  # -> [bs, 64, 1, 1]
         )
 
         self.linear = nn.Sequential(
@@ -60,9 +61,9 @@ class Discriminator(nn.Module):
         in_image = image.reshape((bs, 1, h, w))
         in_features = features.reshape((bs, k, 1, 1))
         in_features = torch.tile(in_features, (1, 1, h, w))  # -> features [bs, k, h, w]
-        out = torch.cat((in_features, in_image), dim=1)      # -> [bs, k+1, h, w]
+        out = torch.cat((in_features, in_image), dim=1)  # -> [bs, k+1, h, w]
         out = self.encoder1(out)
-        out = F.pad(out, (0, 0, h//2, h//2))
+        out = F.pad(out, (0, 0, h // 2, h // 2))
         out = self.encoder2(out)
         out = out.squeeze()
         out = torch.cat((features, out), dim=1)  # -> [bs, 69]
@@ -75,14 +76,14 @@ class CustomActivation(nn.Module):
         super().__init__()
 
     def forward(self, x):
-      shift = 0.01
-      val = np.log10(2)
-      v0 = np.log10(2) / 10
-      return torch.where(
-          x > shift,
-          val + x - shift,
-          v0 + nn.ELU(alpha=(v0 * shift / (val - v0)))(x) * (val - v0) / shift
-      )
+        shift = 0.01
+        val = np.log10(2)
+        v0 = np.log10(2) / 10
+        return torch.where(
+            x > shift,
+            val + x - shift,
+            v0 + nn.ELU(alpha=(v0 * shift / (val - v0)))(x) * (val - v0) / shift
+        )
 
 
 class Generator(nn.Module):
