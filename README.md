@@ -1,5 +1,4 @@
 # Explore Adaptive Spectral Normalization for Generative Models
-
 The purpose of this project is to explore usage of spectral normalization and its variations in generative model for data simulation of the Time Projection Chamber tracker of
 the MPD experiment at the NICA accelerator complex.
 
