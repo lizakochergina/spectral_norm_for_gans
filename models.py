@@ -9,10 +9,10 @@ from init import SPEC_NORM_DISC, SPEC_NORM_GEN
 def custom_conv(in_channels, out_channels, kernel_size, padding, is_spectral_norm=False):
     if is_spectral_norm:
         return spectral_norm(
-            nn.Conv2d(in_channels=in_channels, out_channels=out_channels, kernel_size=kernel_size, padding=padding),
+            nn.Conv2d(in_channels=in_channels, out_channels=out_channels, kernel_size=kernel_size, padding=padding)
         )
     else:
-        return nn.Conv2d(in_channels=in_channels, out_channels=out_channels, kernel_size=kernel_size, padding=padding),
+        return nn.Conv2d(in_channels=in_channels, out_channels=out_channels, kernel_size=kernel_size, padding=padding)
 
 
 def custom_linear(in_features, out_features, is_spectral_norm=False):
@@ -37,7 +37,7 @@ class Discriminator(nn.Module):
 
         self.encoder1 = nn.Sequential(  # bs  f   h  w
             new_block(in_channels=6, out_channels=16),  # -> [bs, 16, 8, 16]
-            new_block(in_channels=16, out_channels=16),  # -> [bs, 16, 8, 16]
+            new_block(in_channels=16, out_channels=16)  # -> [bs, 16, 8, 16]
         )
 
         self.encoder2 = nn.Sequential(

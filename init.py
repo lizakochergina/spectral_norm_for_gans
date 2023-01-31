@@ -15,6 +15,8 @@ SAVE_TIME = 20
 SPEC_NORM_DISC = True
 SPEC_NORM_GEN = False
 
+CHI_FILE = 'evaluation/chi_metric/chi_metric.npy'
+
 LOSS = 'hinge'  # wasserstein or hinge
 
 pad_range = (-3, 5)

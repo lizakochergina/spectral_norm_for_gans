@@ -4,7 +4,7 @@ import numpy as np
 import io
 import torch
 import os
-from init import pad_range, time_range, BATCH_SIZE, device, metric_names, SAVE_TIME
+from init import pad_range, time_range, BATCH_SIZE, device, metric_names, SAVE_TIME, CHI_FILE
 from trends import make_trend_plot
 
 
@@ -139,4 +139,9 @@ def evaluate_model(gen_model, features_real, data_real, losses_train, losses_tes
     show_metrics(metrics_real, metrics_fake[:len(data_real)], epoch)
     show_imgs(data_real, data_fake[:len(data_real)], epoch)
     show_losses(losses_train, losses_test, k, epoch)
-    return get_metric(features_real, features_fake, metrics_real, metrics_fake, prev_chi_metrics, epoch)
+    chi = get_metric(features_real, features_fake, metrics_real, metrics_fake, prev_chi_metrics, epoch)
+
+    with open(CHI_FILE, 'wb') as f:
+        np.save(f, prev_chi_metrics + [chi])
+
+    return chi
