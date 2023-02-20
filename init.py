@@ -17,7 +17,7 @@ SPEC_NORM_GEN = False
 
 CHI_FILE = 'evaluation/chi_metric/chi_metric.npy'
 
-LOSS = 'hinge'  # wasserstein or hinge
+LOSS = 'wasserstein'  # wasserstein or hinge or simple
 
 pad_range = (-3, 5)
 time_range = (-7, 9)
