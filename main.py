@@ -27,6 +27,9 @@ for epoch in tqdm(range(NUM_EPOCHS)):
         chi_metric.append(chi)
         torch.save({
             'epoch': epoch,
-            'model_state_dict': gen_model.generator.state_dict(),
+            'gen_state_dict': gen_model.generator.state_dict(),
+            'gen_optimizer_state_dict': gen_model.gen_optimizer.state_dict(),
+            'disc_state_dict': gen_model.discriminator.state_dict(),
+            'disc_optimizer_state_dict': gen_model.disc_optimizer.state_dict(),
             'metric': chi,
-        }, 'models/generator_' + str(epoch) + '.pth')
+        }, 'models/checkpoint_' + str(epoch) + '.pth')

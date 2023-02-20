@@ -6,6 +6,7 @@ import torch
 import os
 from init import pad_range, time_range, BATCH_SIZE, device, metric_names, SAVE_TIME, CHI_FILE
 from trends import make_trend_plot
+from combine_imgs import combine_imgs
 
 
 def show_losses(losses_train, losses_test, n, epoch):
@@ -143,5 +144,7 @@ def evaluate_model(gen_model, features_real, data_real, losses_train, losses_tes
 
     with open(CHI_FILE, 'wb') as f:
         np.save(f, prev_chi_metrics + [chi])
+
+    combine_imgs(epoch)
 
     return chi

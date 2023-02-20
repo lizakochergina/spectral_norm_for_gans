@@ -35,3 +35,4 @@ def make_dirs():
     os.mkdir('evaluation/imgs')
     os.mkdir('evaluation/chi_plots')
     os.mkdir('evaluation/chi_metric')
+    os.mkdir('evaluation/chi_full_plots')
