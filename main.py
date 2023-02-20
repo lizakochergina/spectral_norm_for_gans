@@ -1,7 +1,7 @@
 from training import Model
 from init import NUM_EPOCHS, SAVE_TIME, device, make_dirs
 from get_data import get_data
-from evaluation import evaluate_model, show_imgs, show_losses, show_metrics
+from evaluation import evaluate_model
 from tqdm import tqdm
 import torch
 
@@ -32,4 +32,6 @@ for epoch in tqdm(range(NUM_EPOCHS)):
             'disc_state_dict': gen_model.discriminator.state_dict(),
             'disc_optimizer_state_dict': gen_model.disc_optimizer.state_dict(),
             'metric': chi,
+            'train_losses': losses_train,
+            'test_losses': losses_test
         }, 'models/checkpoint_' + str(epoch) + '.pth')
