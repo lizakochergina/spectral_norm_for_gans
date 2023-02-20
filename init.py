@@ -7,12 +7,13 @@ out_channels = 32
 
 LATENT_DIM = 32
 GP_LAMBDA = 10
-BATCH_SIZE = 32
+BATCH_SIZE = 96
 NUM_DISC_UPDATES = 8
-NUM_EPOCHS = 2001
-SAVE_TIME = 20
+NUM_EPOCHS = 10000
+SAVE_TIME = 50
+L_CONSTANT = 1
 
-SPEC_NORM_DISC = True
+SPEC_NORM_DISC = False
 SPEC_NORM_GEN = False
 
 LOSS = 'wasserstein'  # wasserstein or hinge or simple

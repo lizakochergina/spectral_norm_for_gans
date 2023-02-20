@@ -3,7 +3,7 @@ import torch.nn as nn
 import numpy as np
 import torch.nn.functional as F
 from torch.nn.utils.parametrizations import spectral_norm
-from init import SPEC_NORM_DISC, SPEC_NORM_GEN
+from init import SPEC_NORM_DISC, SPEC_NORM_GEN, L_CONSTANT
 
 
 def custom_conv(in_channels, out_channels, kernel_size, padding, is_spectral_norm=False):
@@ -68,6 +68,7 @@ class Discriminator(nn.Module):
         out = out.squeeze()
         out = torch.cat((features, out), dim=1)  # -> [bs, 69]
         out = self.linear(out)
+        out = L_CONSTANT * out
         return out
 
 
