@@ -7,7 +7,7 @@ from PIL import Image
 
 def combine_imgs(epoch):
     path_to_folder = f'evaluation/chi_plots/{str(epoch)}'
-    path_to_save = 'evaluation/chi_full_plots/'
+    path_to_save = f'evaluation/chi_full_plots/{str(epoch)}.png'
 
     variables = [
         'crossing_angle',
@@ -41,4 +41,4 @@ def combine_imgs(epoch):
             y_offset += img.size[1]
         x_offset += img.size[0]
 
-    new_image.save(img_path / f'{str(epoch)}.png')
+    new_image.save(path_to_save)

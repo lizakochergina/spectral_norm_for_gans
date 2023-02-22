@@ -16,6 +16,8 @@ L_CONSTANT = 1
 SPEC_NORM_DISC = False
 SPEC_NORM_GEN = False
 
+CONTINUE_TRAIN = False
+
 LOSS = 'wasserstein'  # wasserstein or hinge or simple
 
 pad_range = (-3, 5)
@@ -26,6 +28,9 @@ metric_names = ['Mean0', 'Mean1', 'Sigma0^2', 'Sigma1^2', 'Cov01']
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
 CHI_FILE = 'evaluation/chi_metric/chi_metric.npy'
+CHECKPOINT_PATH = ''
+CHI_LOAD_FILE = ''
+
 
 def make_dirs():
     os.mkdir('models')
