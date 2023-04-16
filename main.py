@@ -13,7 +13,7 @@ model = Model()
 losses_train = []
 losses_test = []
 chi_metric = []
-epochs = range(NUM_EPOCHS)
+epochs = range(1, NUM_EPOCHS+1)
 
 if CONTINUE_TRAIN:
     checkpoint = torch.load(CHECKPOINT_PATH)
@@ -26,7 +26,7 @@ if CONTINUE_TRAIN:
     with open(CHI_LOAD_FILE, 'rb') as f:
         chi_metric = np.load(f).tolist()
 
-    epochs = range(last_epoch+1, NUM_EPOCHS)
+    epochs = range(last_epoch+1, NUM_EPOCHS+1)
 
 for epoch in tqdm(epochs):
     cur_train_losses = model.train_epoch(data_train, features_train, epoch)
