@@ -22,11 +22,9 @@ if CONTINUE_TRAIN:
     model.discriminator.load_state_dict(checkpoint['disc_state_dict'])
     model.disc_optimizer.load_state_dict(checkpoint['disc_optimizer_state_dict'])
     model.gen_optimizer.load_state_dict(checkpoint['gen_optimizer_state_dict'])
-    losses_train = checkpoint['train_losses']
-    losses_test = checkpoint['test_losses']
 
     with open(CHI_LOAD_FILE, 'rb') as f:
-        chi_metric = np.load(f)[:int(last_epoch / BATCH_SIZE) + 1]
+        chi_metric = np.load(f).tolist()
 
     epochs = range(last_epoch+1, NUM_EPOCHS)
 
