@@ -3,7 +3,7 @@ from torch.autograd import Variable
 import torch.optim as optim
 from models import Generator, Discriminator
 import numpy as np
-from init import GP_LAMBDA, LATENT_DIM, BATCH_SIZE, NUM_DISC_UPDATES, device, LOSS
+from init import GP_LAMBDA, LATENT_DIM, BATCH_SIZE, NUM_DISC_UPDATES, device, LOSS, LR_COEF_DISC, LR_COEF_GEN
 from torch import nn
 
 
@@ -11,8 +11,8 @@ class Model:
     def __init__(self):
         self.generator = Generator().to(device)
         self.discriminator = Discriminator().to(device)
-        self.disc_optimizer = optim.RMSprop(self.discriminator.parameters(), lr=0.0001)
-        self.gen_optimizer = optim.RMSprop(self.generator.parameters(), lr=0.0001)
+        self.disc_optimizer = optim.RMSprop(self.discriminator.parameters(), lr=0.0001/LR_COEF_DISC)
+        self.gen_optimizer = optim.RMSprop(self.generator.parameters(), lr=0.0001/LR_COEF_GEN)
         self.disc_scheduler = optim.lr_scheduler.ExponentialLR(self.disc_optimizer, gamma=0.999)
         self.gen_scheduler = optim.lr_scheduler.ExponentialLR(self.gen_optimizer, gamma=0.999)
 
