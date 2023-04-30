@@ -6,7 +6,8 @@ from tqdm import tqdm
 import torch
 import numpy as np
 
-make_dirs()
+if not CONTINUE_TRAIN:
+    make_dirs()
 
 data_train, data_test, features_train, features_test = get_data()
 model = Model()
